@@ -35,16 +35,13 @@ fun Application.module() {
         level = Level.INFO
     }
     install(CORS) {
-        anyHost()
         method(HttpMethod.Options)
+        method(HttpMethod.Put)
         method(HttpMethod.Delete)
         method(HttpMethod.Patch)
-        header(AccessControlAllowOrigin)
-        header(AccessControlAllowMethods)
-        header(AccessControlAllowHeaders)
+        allowCredentials = true
+        anyHost()
     }
-    install(XForwardedHeaderSupport)
-    install(DefaultHeaders)
     install(ContentNegotiation) {
         json()
     }
