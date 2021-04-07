@@ -1,6 +1,7 @@
 package io.github.lordraydenmk.http
 
 import io.github.lordraydenmk.domain.TodoItem
+import io.ktor.http.*
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -12,4 +13,5 @@ data class TodoItemDto(
     val order: Int? = null
 )
 
-fun TodoItem.toDto(): TodoItemDto = TodoItemDto(id.id.toString(), title, completed, url, order)
+fun TodoItem.toDto(baseUrl: URLBuilder): TodoItemDto =
+    TodoItemDto(id.id.toString(), title, completed, baseUrl.path(id.id.toString()).buildString(), order)
