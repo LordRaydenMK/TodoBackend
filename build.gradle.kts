@@ -1,7 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.github.jengelman.gradle.plugins:shadow:6.1.0")
+    }
+}
+
 plugins {
     application
+    id("com.github.johnrengelman.shadow") version "6.1.0"
     kotlin("jvm") version "1.4.31"
     kotlin("plugin.serialization") version "1.4.31"
 }
@@ -14,7 +24,10 @@ repositories {
 }
 
 application {
-    mainClass.set("io.ktor.server.netty.EngineMain")
+    val className = "io.ktor.server.netty.EngineMain"
+    mainClass.set(className)
+    // https://github.com/johnrengelman/shadow/issues/336
+    mainClassName = className
 }
 
 val compileKotlin: KotlinCompile by tasks
@@ -33,4 +46,14 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
 
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
+}
+
+tasks.withType<Jar> {
+    manifest {
+        attributes(
+            mapOf(
+                "Main-Class" to application.mainClass.get()
+            )
+        )
+    }
 }
