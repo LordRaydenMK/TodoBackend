@@ -36,6 +36,16 @@ compileKotlin.kotlinOptions {
     freeCompilerArgs = listOf("-Xinline-classes")
 }
 
+val cleanTask = tasks.named("clean")
+
+tasks.named("build").configure {
+    mustRunAfter(cleanTask)
+}
+
+tasks.register("stage") {
+    dependsOn(tasks.named("build"), cleanTask)
+}
+
 dependencies {
     implementation(kotlin("stdlib"))
     val ktor_version = "1.5.3"
