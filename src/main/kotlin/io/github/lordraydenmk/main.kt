@@ -39,7 +39,7 @@ fun Application.module() {
         method(HttpMethod.Put)
         method(HttpMethod.Delete)
         method(HttpMethod.Patch)
-        allowCredentials = true
+        header(HttpHeaders.ContentType)
         anyHost()
     }
     install(ContentNegotiation) {
