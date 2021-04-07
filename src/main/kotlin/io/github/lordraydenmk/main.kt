@@ -7,6 +7,7 @@ import io.github.lordraydenmk.http.routes
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.http.HttpHeaders.AccessControlAllowHeaders
 import io.ktor.http.HttpHeaders.AccessControlAllowMethods
 import io.ktor.http.HttpHeaders.AccessControlAllowOrigin
 import io.ktor.response.*
@@ -40,7 +41,10 @@ fun Application.module() {
         method(HttpMethod.Patch)
         header(AccessControlAllowOrigin)
         header(AccessControlAllowMethods)
+        header(AccessControlAllowHeaders)
     }
+    install(XForwardedHeaderSupport)
+    install(DefaultHeaders)
     install(ContentNegotiation) {
         json()
     }
