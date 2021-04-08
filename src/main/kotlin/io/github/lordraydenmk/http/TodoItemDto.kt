@@ -14,4 +14,10 @@ data class TodoItemDto(
 )
 
 fun TodoItem.toDto(baseUrl: URLBuilder): TodoItemDto =
-    TodoItemDto(id.id.toString(), title, completed, baseUrl.path(id.id.toString()).buildString(), order)
+    TodoItemDto(id.id.toString(), title, completed, baseUrl.path(id.id.toString()).urlString(), order)
+
+private fun URLBuilder.urlString(): String =
+    when (protocol.defaultPort) {
+        port -> "${protocol.name}://$host$encodedPath"
+        else -> "${protocol.name}://$host:$port$encodedPath"
+    }
