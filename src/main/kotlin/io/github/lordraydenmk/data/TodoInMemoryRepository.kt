@@ -10,13 +10,17 @@ class TodoInMemoryRepository : TodoRepository {
 
     override suspend fun getAll(): List<TodoItem> = todos.values.toList()
 
-    override suspend fun createTodo(todoItem: TodoItem): TodoItem = todoItem.also { todos[todoItem.id] = todoItem }
+    override suspend fun createTodo(todoItem: TodoItem): TodoItem = synchronized(this) {
+            todoItem.also { todos[todoItem.id] = todoItem }
+        }
 
     override suspend fun deleteAll() {
         todos.clear()
     }
 
-    override suspend fun getById(id: TodoId): TodoItem? = todos[id]
+    override suspend fun getById(id: TodoId): TodoItem? = synchronized(this) {
+        todos[id]
+    }
 
     override suspend fun deleteById(id: TodoId) {
         todos.remove(id)
