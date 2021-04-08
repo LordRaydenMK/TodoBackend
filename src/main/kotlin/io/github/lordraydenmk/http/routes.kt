@@ -21,7 +21,13 @@ private fun PipelineContext<Unit, ApplicationCall>.urlBuilder(): URLBuilder =
 
 fun Routing.routes(repo: TodoInMemoryRepository) {
     get("/") {
+        Logger.getGlobal().log(Level.INFO) { "getAll" }
         call.respond(repo.getAll().map { it.toDto(urlBuilder()) })
+    }
+    get("/{id}") {
+        val id = UUID.fromString(call.parameters["id"]!!)
+        Logger.getLogger("routing").log(Level.INFO) { "getTodo $id" }
+        repo.getById(TodoId(id))?.let { call.respond(it.toDto(urlBuilder())) } ?: call.respond(HttpStatusCode.NotFound)
     }
     post("/") {
         val payload = call.receive<TodoItemDto>()
@@ -31,10 +37,6 @@ fun Routing.routes(repo: TodoInMemoryRepository) {
             val todoItem = TodoItem(TodoId(id), payload.title, payload.completed ?: false, payload.order ?: 0)
             call.respond(HttpStatusCode.Created, repo.createTodo(todoItem).toDto(urlBuilder()))
         } else call.respond(HttpStatusCode.BadRequest)
-    }
-    delete("/") {
-        repo.deleteAll()
-        call.respond(HttpStatusCode.NoContent)
     }
     patch("/{id}") {
         val id = UUID.fromString(call.parameters["id"]!!)
@@ -51,10 +53,9 @@ fun Routing.routes(repo: TodoInMemoryRepository) {
         if (updated != null) call.respond(repo.updateTodo(todoId, updated).toDto(urlBuilder()))
         else call.respond(HttpStatusCode.NotFound)
     }
-    get("/{id}") {
-        val id = UUID.fromString(call.parameters["id"]!!)
-        Logger.getLogger("routing").log(Level.INFO) { "getTodo $id" }
-        repo.getById(TodoId(id))?.let { call.respond(it.toDto(urlBuilder())) } ?: call.respond(HttpStatusCode.NotFound)
+    delete("/") {
+        repo.deleteAll()
+        call.respond(HttpStatusCode.NoContent)
     }
     delete("/{id}") {
         val id = UUID.fromString(call.parameters["id"]!!)
