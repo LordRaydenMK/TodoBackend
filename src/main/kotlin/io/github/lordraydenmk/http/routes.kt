@@ -13,6 +13,8 @@ import io.ktor.routing.*
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
 import java.util.*
+import java.util.logging.Level
+import java.util.logging.Logger
 
 private fun PipelineContext<Unit, ApplicationCall>.urlBuilder(): URLBuilder =
     URLBuilder.createFromCall(call)
@@ -23,6 +25,7 @@ fun Routing.routes(repo: TodoInMemoryRepository) {
     }
     post("/") {
         val payload = call.receive<TodoItemDto>()
+        Logger.getLogger("routing").log(Level.INFO) { "createTodo $payload" }
         if (payload.title != null) {
             val id = payload.id?.let { UUID.fromString(it) } ?: UUID.randomUUID()
             val todoItem = TodoItem(TodoId(id), payload.title, payload.completed ?: false, payload.order ?: 0)
@@ -50,6 +53,7 @@ fun Routing.routes(repo: TodoInMemoryRepository) {
     }
     get("/{id}") {
         val id = UUID.fromString(call.parameters["id"]!!)
+        Logger.getLogger("routing").log(Level.INFO) { "getTodo $id" }
         repo.getById(TodoId(id))?.let { call.respond(it.toDto(urlBuilder())) } ?: call.respond(HttpStatusCode.NotFound)
     }
     delete("/{id}") {
