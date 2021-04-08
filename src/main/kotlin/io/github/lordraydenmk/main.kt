@@ -24,7 +24,7 @@ fun Application.module() {
         }
     }
     install(CallLogging) {
-        level = Level.INFO
+        level = Level.DEBUG
     }
     install(CORS) {
         method(HttpMethod.Options)
