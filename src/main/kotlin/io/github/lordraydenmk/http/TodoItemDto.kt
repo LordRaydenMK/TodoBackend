@@ -18,6 +18,6 @@ fun TodoItem.toDto(baseUrl: URLBuilder): TodoItemDto =
 
 private fun URLBuilder.urlString(): String =
     when (host) {
-        "localhost" -> "${protocol.name}://$host:$port$encodedPath" // include the port on local machine
-        else -> "${protocol.name}://$host$encodedPath"
+        "localhost" -> "http://$host:$port$encodedPath" // include the port on local machine
+        else -> "https://$host$encodedPath"
     }
