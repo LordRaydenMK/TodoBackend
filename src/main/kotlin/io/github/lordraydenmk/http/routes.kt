@@ -36,10 +36,8 @@ fun Routing.routes(repo: TodoInMemoryRepository) {
         val id = call.parameters["id"]?.toUUIDOrNull()!!
         val payload = call.receive<TodoItemDto>()
         val patch = PatchTodo(
-            payload.id?.toUUIDOrNull(),
             payload.title,
             payload.completed,
-            payload.url,
             payload.order
         )
         val updated = repo.getById(id)?.patch(patch)
