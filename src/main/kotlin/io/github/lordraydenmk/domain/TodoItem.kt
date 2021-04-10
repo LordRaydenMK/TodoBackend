@@ -2,7 +2,7 @@ package io.github.lordraydenmk.domain
 
 import java.util.*
 
-inline class TodoId(val id: UUID)
+typealias TodoId = UUID
 
 data class TodoItem(
     val id: TodoId,

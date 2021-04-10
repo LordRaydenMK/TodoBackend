@@ -32,9 +32,6 @@ application {
 
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions.jvmTarget = "11"
-compileKotlin.kotlinOptions {
-    freeCompilerArgs = listOf("-Xinline-classes")
-}
 
 val cleanTask = tasks.named("clean")
 

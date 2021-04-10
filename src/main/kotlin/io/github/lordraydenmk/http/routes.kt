@@ -2,7 +2,6 @@ package io.github.lordraydenmk.http
 
 import io.github.lordraydenmk.data.TodoInMemoryRepository
 import io.github.lordraydenmk.domain.PatchTodo
-import io.github.lordraydenmk.domain.TodoId
 import io.github.lordraydenmk.domain.TodoItem
 import io.github.lordraydenmk.domain.patch
 import io.ktor.application.*
@@ -22,30 +21,29 @@ fun Routing.routes(repo: TodoInMemoryRepository) {
         call.respond(repo.getAll().map { it.toDto(urlBuilder()) })
     }
     get("/{id}") {
-        val id = UUID.fromString(call.parameters["id"]!!)
-        repo.getById(TodoId(id))?.let { call.respond(it.toDto(urlBuilder())) } ?: call.respond(HttpStatusCode.NotFound)
+        val id = call.parameters["id"]?.toUUIDOrNull()!!
+        repo.getById(id)?.let { call.respond(it.toDto(urlBuilder())) } ?: call.respond(HttpStatusCode.NotFound)
     }
     post("/") {
         val payload = call.receive<TodoItemDto>()
         if (payload.title != null) {
             val id = payload.id?.let { UUID.fromString(it) } ?: UUID.randomUUID()
-            val todoItem = TodoItem(TodoId(id), payload.title, payload.completed ?: false, payload.order ?: 0)
+            val todoItem = TodoItem(id, payload.title, payload.completed ?: false, payload.order ?: 0)
             call.respond(HttpStatusCode.Created, repo.createTodo(todoItem).toDto(urlBuilder()))
         } else call.respond(HttpStatusCode.BadRequest)
     }
     patch("/{id}") {
-        val id = UUID.fromString(call.parameters["id"]!!)
-        val todoId = TodoId(id)
+        val id = call.parameters["id"]?.toUUIDOrNull()!!
         val payload = call.receive<TodoItemDto>()
         val patch = PatchTodo(
-            payload.id?.let { TodoId(UUID.fromString(it)) },
+            payload.id?.toUUIDOrNull(),
             payload.title,
             payload.completed,
             payload.url,
             payload.order
         )
-        val updated = repo.getById(todoId)?.patch(patch)
-        if (updated != null) call.respond(repo.updateTodo(todoId, updated).toDto(urlBuilder()))
+        val updated = repo.getById(id)?.patch(patch)
+        if (updated != null) call.respond(repo.updateTodo(id, updated).toDto(urlBuilder()))
         else call.respond(HttpStatusCode.NotFound)
     }
     delete("/") {
@@ -53,9 +51,8 @@ fun Routing.routes(repo: TodoInMemoryRepository) {
         call.respond(HttpStatusCode.NoContent)
     }
     delete("/{id}") {
-        val id = UUID.fromString(call.parameters["id"]!!)
-        val todoId = TodoId(id)
-        repo.deleteById(todoId)
+        val id = call.parameters["id"]?.toUUIDOrNull()!!
+        repo.deleteById(id)
         call.respond(HttpStatusCode.NoContent)
     }
 }
