@@ -6,7 +6,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TodoItemDto(
-    val id: String? = null,
     val title: String? = null,
     val completed: Boolean? = null,
     val url: String? = null,
@@ -14,7 +13,7 @@ data class TodoItemDto(
 )
 
 fun TodoItem.toDto(baseUrl: URLBuilder): TodoItemDto =
-    TodoItemDto(id.id.toString(), title, completed, baseUrl.path(id.id.toString()).urlString(), order)
+    TodoItemDto(title, completed, baseUrl.path(id.toString()).urlString(), order)
 
 private fun URLBuilder.urlString(): String =
     when (host) {
