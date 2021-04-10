@@ -16,4 +16,8 @@ data class TodoItemDto(
 fun TodoItem.toDto(baseUrl: URLBuilder): TodoItemDto =
     TodoItemDto(id.id.toString(), title, completed, baseUrl.path(id.id.toString()).urlString(), order)
 
-private fun URLBuilder.urlString(): String = "${protocol.name}://$host$encodedPath"
+private fun URLBuilder.urlString(): String =
+    when (host) {
+        "localhost" -> "${protocol.name}://$host:$port$encodedPath" // include the port on local machine
+        else -> "${protocol.name}://$host$encodedPath"
+    }
