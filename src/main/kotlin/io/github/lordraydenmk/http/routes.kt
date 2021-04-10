@@ -35,6 +35,7 @@ fun Routing.routes(repo: TodoInMemoryRepository) {
         if (payload.title != null) {
             val id = payload.id?.let { UUID.fromString(it) } ?: UUID.randomUUID()
             val todoItem = TodoItem(TodoId(id), payload.title, payload.completed ?: false, payload.order ?: 0)
+            Logger.getLogger("routing").log(Level.INFO) { "createTodo $id" }
             call.respond(HttpStatusCode.Created, repo.createTodo(todoItem).toDto(urlBuilder()))
         } else call.respond(HttpStatusCode.BadRequest)
     }
