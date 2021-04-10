@@ -8,7 +8,7 @@ data class TodoItem(
     val id: TodoId,
     val title: String,
     val completed: Boolean = false,
-    val order: Int
+    val order: Int? = null
 )
 
 fun TodoItem.patch(patch: PatchTodo): TodoItem =

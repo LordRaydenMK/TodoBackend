@@ -28,18 +28,14 @@ fun Routing.routes(repo: TodoInMemoryRepository) {
         val payload = call.receive<TodoItemDto>()
         if (payload.title != null) {
             val id = UUID.randomUUID()
-            val todoItem = TodoItem(id, payload.title, payload.completed ?: false, payload.order ?: 0)
+            val todoItem = TodoItem(id, payload.title, payload.completed ?: false, payload.order)
             call.respond(HttpStatusCode.Created, repo.createTodo(todoItem).toDto(urlBuilder()))
         } else call.respond(HttpStatusCode.BadRequest)
     }
     patch("/{id}") {
         val id = call.parameters["id"]?.toUUIDOrNull()!!
         val payload = call.receive<TodoItemDto>()
-        val patch = PatchTodo(
-            payload.title,
-            payload.completed,
-            payload.order
-        )
+        val patch = PatchTodo(payload.title, payload.completed, payload.order)
         val updated = repo.getById(id)?.patch(patch)
         if (updated != null) call.respond(repo.updateTodo(id, updated).toDto(urlBuilder()))
         else call.respond(HttpStatusCode.NotFound)
