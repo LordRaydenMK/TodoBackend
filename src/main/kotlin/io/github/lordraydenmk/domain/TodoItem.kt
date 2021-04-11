@@ -11,6 +11,9 @@ data class TodoItem(
     val order: Int? = null
 )
 
+fun TodoItem(id: TodoId, title: String, completed: Boolean?, order: Int?): TodoItem =
+    TodoItem(id, title, completed ?: false, order)
+
 fun TodoItem.patch(patch: PatchTodo): TodoItem =
     copy(
         title = patch.title ?: title,
