@@ -19,9 +19,13 @@ import org.jetbrains.exposed.sql.update
 class TodoExposedRepository : TodoRepository {
 
     init {
+        val dbUrl = System.getenv("DATABASE_URL") ?: throw DatabaseUrlMissingException
+        val dbConfig = parseUrl(dbUrl)
         Database.connect(
-            url = System.getenv("DATABASE_URL") ?: throw DatabaseUrlMissingException,
-            driver = "org.postgresql.Driver"
+            url = "jdbc:postgresql://${dbConfig.url}",
+            driver = "org.postgresql.Driver",
+            user = dbConfig.username,
+            password = dbConfig.password
         )
         transaction {
             addLogger(Slf4jSqlDebugLogger)
