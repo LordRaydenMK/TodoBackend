@@ -1,6 +1,6 @@
 package io.github.lordraydenmk
 
-import io.github.lordraydenmk.data.TodoInMemoryRepository
+import io.github.lordraydenmk.data.TodoExposedRepository
 import io.github.lordraydenmk.http.routes
 import io.ktor.application.*
 import io.ktor.features.*
@@ -14,7 +14,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused") // Used in application.conf
 fun Application.module() {
-    val repo = TodoInMemoryRepository()
+    val repo = TodoExposedRepository()
     install(StatusPages) {
         status(HttpStatusCode.NotFound) {
             call.respond(HttpStatusCode.NotFound, "Not Found!")
