@@ -22,35 +22,37 @@ private fun ApplicationCall.todoId(): TodoId? =
         .toUUIDOrNull()
 
 fun Routing.routes(repo: TodoInMemoryRepository) {
-    get("/") {
-        call.respond(repo.getAll().map { it.toDto(urlBuilder()) })
-    }
-    get("/{id}") {
-        val id = call.todoId()!!
-        repo.getById(id)?.let { call.respond(it.toDto(urlBuilder())) } ?: call.respond(HttpStatusCode.NotFound)
-    }
-    post("/") {
-        val payload = call.receive<TodoItemDto>()
-        if (payload.title != null) {
-            val todoItem = TodoItem(UUID.randomUUID(), payload.title, payload.completed, payload.order)
-            call.respond(HttpStatusCode.Created, repo.createTodo(todoItem).toDto(urlBuilder()))
-        } else call.respond(HttpStatusCode.BadRequest)
-    }
-    patch("/{id}") {
-        val id = call.todoId()!!
-        val payload = call.receive<TodoItemDto>()
-        val patch = PatchTodo(payload.title, payload.completed, payload.order)
-        val updated = repo.getById(id)?.patch(patch)
-        if (updated != null) call.respond(repo.updateTodo(id, updated).toDto(urlBuilder()))
-        else call.respond(HttpStatusCode.NotFound)
-    }
-    delete("/") {
-        repo.deleteAll()
-        call.respond(HttpStatusCode.NoContent)
-    }
-    delete("/{id}") {
-        val id = call.todoId()!!
-        repo.deleteById(id)
-        call.respond(HttpStatusCode.NoContent)
+    route("/") {
+        get {
+            call.respond(repo.getAll().map { it.toDto(urlBuilder()) })
+        }
+        get("{id}") {
+            val id = call.todoId()!!
+            repo.getById(id)?.let { call.respond(it.toDto(urlBuilder())) } ?: call.respond(HttpStatusCode.NotFound)
+        }
+        post {
+            val payload = call.receive<TodoItemDto>()
+            if (payload.title != null) {
+                val todoItem = TodoItem(UUID.randomUUID(), payload.title, payload.completed, payload.order)
+                call.respond(HttpStatusCode.Created, repo.createTodo(todoItem).toDto(urlBuilder()))
+            } else call.respond(HttpStatusCode.BadRequest)
+        }
+        patch("{id}") {
+            val id = call.todoId()!!
+            val payload = call.receive<TodoItemDto>()
+            val patch = PatchTodo(payload.title, payload.completed, payload.order)
+            val updated = repo.getById(id)?.patch(patch)
+            if (updated != null) call.respond(repo.updateTodo(id, updated).toDto(urlBuilder()))
+            else call.respond(HttpStatusCode.NotFound)
+        }
+        delete {
+            repo.deleteAll()
+            call.respond(HttpStatusCode.NoContent)
+        }
+        delete("{id}") {
+            val id = call.todoId()!!
+            repo.deleteById(id)
+            call.respond(HttpStatusCode.NoContent)
+        }
     }
 }
