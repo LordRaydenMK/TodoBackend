@@ -2,5 +2,6 @@
   "name": "TodoBackend in Kotlin",
   "description": "TodoBackend in Kotlin with Ktor deployed on Heroku",
   "image": "heroku/java",
-  "addons": []
+  "addons": ["heroku-postgresql"],
+  "repository": "https://github.com/LordRaydenMK/TodoBackend"
 }
