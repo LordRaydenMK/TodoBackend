@@ -43,6 +43,18 @@ tasks.register("stage") {
     dependsOn(tasks.named("build"), cleanTask)
 }
 
+sourceSets {
+    test {
+        java {
+            setSrcDirs(listOf("src/testFixtures/kotlin"))
+        }
+    }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
 dependencies {
     implementation(kotlin("stdlib"))
     val ktor_version = "1.5.3"
@@ -57,6 +69,9 @@ dependencies {
     implementation("org.postgresql:postgresql:42.2.19")
 
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
+    val kotest_version = "4.4.3"
+    testImplementation("io.kotest:kotest-runner-junit5:$kotest_version")
+    testImplementation("io.kotest:kotest-assertions-ktor:$kotest_version")
 }
 
 tasks.withType<Jar> {
