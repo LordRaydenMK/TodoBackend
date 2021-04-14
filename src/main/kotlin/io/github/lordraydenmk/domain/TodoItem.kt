@@ -14,14 +14,14 @@ data class TodoItem(
 fun TodoItem(id: TodoId, title: String, completed: Boolean?, order: Int?): TodoItem =
     TodoItem(id, title, completed ?: false, order)
 
-fun TodoItem.patch(patch: PatchTodo): TodoItem =
+fun TodoItem.patch(patch: TodoPatch): TodoItem =
     copy(
         title = patch.title ?: title,
         completed = patch.completed ?: completed,
         order = patch.order ?: order
     )
 
-data class PatchTodo(
+data class TodoPatch(
     val title: String?,
     val completed: Boolean?,
     val order: Int?
