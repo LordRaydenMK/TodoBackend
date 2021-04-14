@@ -65,4 +65,12 @@ class RoutesTest : FunSpec({
             }
         }
     }
+
+    test("getById - invalid route id - HTTP BadRequest") {
+        withTestApplication({ testModule(repo) }) {
+            handleRequest(HttpMethod.Get, "/not-a-valid-UUID").apply {
+                response shouldHaveStatus HttpStatusCode.BadRequest
+            }
+        }
+    }
 })
