@@ -1,6 +1,7 @@
 package io.github.lordraydenmk.http
 
 import io.github.lordraydenmk.data.TodoInMemoryRepository
+import io.github.lordraydenmk.domain.TodoItem
 import io.kotest.assertions.ktor.shouldHaveContent
 import io.kotest.assertions.ktor.shouldHaveStatus
 import io.kotest.core.spec.style.FunSpec
@@ -8,6 +9,7 @@ import io.ktor.http.*
 import io.ktor.server.testing.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.util.*
 
 class RoutesTest : FunSpec({
 
@@ -37,6 +39,29 @@ class RoutesTest : FunSpec({
         withTestApplication({ testModule(repo) }) {
             handleRequest(HttpMethod.Delete, "/").apply {
                 response shouldHaveStatus HttpStatusCode.NoContent
+            }
+        }
+    }
+
+    test("get by ID - ID exists - returns the todo") {
+        val id = UUID.randomUUID()
+        with(repo) {
+            deleteAll()
+            createTodo(TodoItem(id, "My Todo"))
+        }
+        withTestApplication({ testModule(repo) }) {
+            handleRequest(HttpMethod.Get, "/$id").apply {
+                response shouldHaveStatus HttpStatusCode.OK
+                response shouldHaveContent """{"title":"My Todo","completed":false,"url":"http://localhost:80/$id","order":null}"""
+            }
+        }
+    }
+
+    test("get by ID - ID does NOT exist - HTTP NotFound") {
+        repo.deleteAll()
+        withTestApplication({ testModule(repo) }) {
+            handleRequest(HttpMethod.Get, "/${UUID.randomUUID()}").apply {
+                response shouldHaveStatus HttpStatusCode.NotFound
             }
         }
     }
