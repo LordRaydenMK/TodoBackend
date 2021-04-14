@@ -1,9 +1,8 @@
 package io.github.lordraydenmk.http
 
-import io.github.lordraydenmk.domain.PatchTodo
 import io.github.lordraydenmk.domain.TodoItem
+import io.github.lordraydenmk.domain.TodoPatch
 import io.github.lordraydenmk.domain.TodoRepository
-import io.github.lordraydenmk.domain.patch
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.request.*
@@ -32,9 +31,9 @@ fun Routing.routes(repo: TodoRepository) {
         }
         idRoute("{id}", HttpMethod.Patch) { todoId ->
             val payload = call.receive<TodoItemDto>()
-            val patch = PatchTodo(payload.title, payload.completed, payload.order)
-            val updated = repo.getById(todoId)?.patch(patch)
-            if (updated != null) call.respond(repo.updateTodo(todoId, updated).toDto(urlBuilder()))
+            val patch = TodoPatch(payload.title, payload.completed, payload.order)
+            val updated = repo.updateTodo(todoId, patch)
+            if (updated != null) call.respond(updated.toDto(urlBuilder()))
             else call.respond(HttpStatusCode.NotFound)
         }
         delete {

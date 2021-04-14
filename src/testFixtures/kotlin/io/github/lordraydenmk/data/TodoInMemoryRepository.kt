@@ -1,8 +1,10 @@
 package io.github.lordraydenmk.data
 
+import io.github.lordraydenmk.domain.TodoPatch
 import io.github.lordraydenmk.domain.TodoId
 import io.github.lordraydenmk.domain.TodoItem
 import io.github.lordraydenmk.domain.TodoRepository
+import io.github.lordraydenmk.domain.patch
 
 class TodoInMemoryRepository : TodoRepository {
 
@@ -22,9 +24,6 @@ class TodoInMemoryRepository : TodoRepository {
         todos.remove(id)
     }
 
-    override suspend fun updateTodo(id: TodoId, todo: TodoItem): TodoItem {
-        todos.remove(id)
-        todos[todo.id] = todo
-        return todo
-    }
+    override suspend fun updateTodo(id: TodoId, todo: TodoPatch): TodoItem? =
+        todos[id]?.patch(todo)?.also { todos[id] = it }
 }

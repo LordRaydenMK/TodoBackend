@@ -12,5 +12,5 @@ interface TodoRepository {
 
     suspend fun deleteById(id: TodoId)
 
-    suspend fun updateTodo(id: TodoId, todo: TodoItem): TodoItem
+    suspend fun updateTodo(id: TodoId, todo: TodoPatch): TodoItem?
 }

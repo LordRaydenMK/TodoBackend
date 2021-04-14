@@ -1,5 +1,6 @@
 package io.github.lordraydenmk.data
 
+import io.github.lordraydenmk.domain.TodoPatch
 import io.github.lordraydenmk.domain.TodoId
 import io.github.lordraydenmk.domain.TodoItem
 import io.github.lordraydenmk.domain.TodoRepository
@@ -74,15 +75,15 @@ class TodoExposedRepository : TodoRepository {
         check(delete == 1) { "Should delete exactly 1 row" }
     }
 
-    override suspend fun updateTodo(id: TodoId, todo: TodoItem): TodoItem {
+    override suspend fun updateTodo(id: TodoId, todo: TodoPatch): TodoItem? {
         val update = transaction {
             Todos.update({ Todos.todoId eq id }) {
-                it[title] = todo.title
-                it[completed] = todo.completed
+                if (todo.title != null) it[title] = todo.title
+                if (todo.completed != null) it[completed] = todo.completed
                 it[order] = todo.order
             }
         }
-        check(update == 1) { "Should update exactly 1 row" }
-        return todo
+        check(update <= 1) { "Should update 0-1 rows" }
+        return getById(id)
     }
 }
