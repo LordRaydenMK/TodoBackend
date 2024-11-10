@@ -19,8 +19,9 @@ application {
     mainClass.set(className)
 }
 
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions.jvmTarget = "17"
+kotlin {
+    jvmToolchain(21)
+}
 
 val cleanTask = tasks.named("clean")
 
@@ -50,7 +51,7 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("ch.qos.logback:logback-classic:1.2.3")
     implementation("io.ktor:ktor-serialization:$ktor_version")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     val exposedVersion = "0.30.1"
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
