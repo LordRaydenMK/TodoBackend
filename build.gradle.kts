@@ -1,19 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("com.github.jengelman.gradle.plugins:shadow:6.1.0")
-    }
-}
-
 plugins {
     application
-    id("com.github.johnrengelman.shadow") version "6.1.0"
-    kotlin("jvm") version "1.4.31"
-    kotlin("plugin.serialization") version "1.4.31"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+    kotlin("jvm") version "1.8.20"
+    kotlin("plugin.serialization") version "1.8.20"
 }
 
 group = "io.github.lordraydenmk"
@@ -26,12 +17,10 @@ repositories {
 application {
     val className = "io.ktor.server.netty.EngineMain"
     mainClass.set(className)
-    // https://github.com/johnrengelman/shadow/issues/336
-    mainClassName = className
 }
 
 val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions.jvmTarget = "11"
+compileKotlin.kotlinOptions.jvmTarget = "17"
 
 val cleanTask = tasks.named("clean")
 
@@ -56,7 +45,6 @@ tasks.withType<Test> {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
     val ktor_version = "1.5.3"
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-server-netty:$ktor_version")
