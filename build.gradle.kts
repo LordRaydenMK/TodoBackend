@@ -1,19 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("com.github.jengelman.gradle.plugins:shadow:6.1.0")
-    }
-}
-
 plugins {
     application
-    id("com.github.johnrengelman.shadow") version "6.1.0"
-    kotlin("jvm") version "1.4.31"
-    kotlin("plugin.serialization") version "1.4.31"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    kotlin("jvm") version "2.0.20"
+    kotlin("plugin.serialization") version "2.0.20"
 }
 
 group = "io.github.lordraydenmk"
@@ -26,12 +17,11 @@ repositories {
 application {
     val className = "io.ktor.server.netty.EngineMain"
     mainClass.set(className)
-    // https://github.com/johnrengelman/shadow/issues/336
-    mainClassName = className
 }
 
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions.jvmTarget = "11"
+kotlin {
+    jvmToolchain(21)
+}
 
 val cleanTask = tasks.named("clean")
 
@@ -56,17 +46,16 @@ tasks.withType<Test> {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
-    val ktor_version = "1.5.3"
+    val ktor_version = "1.6.8"
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-server-netty:$ktor_version")
-    implementation("ch.qos.logback:logback-classic:1.2.3")
+    implementation("ch.qos.logback:logback-classic:1.4.12")
     implementation("io.ktor:ktor-serialization:$ktor_version")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     val exposedVersion = "0.30.1"
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
-    implementation("org.postgresql:postgresql:42.2.19")
+    implementation("org.postgresql:postgresql:42.7.2")
 
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     val kotest_version = "4.4.3"
