@@ -49,7 +49,7 @@ dependencies {
     val ktor_version = "1.6.8"
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-server-netty:$ktor_version")
-    implementation("ch.qos.logback:logback-classic:1.2.3")
+    implementation("ch.qos.logback:logback-classic:1.4.12")
     implementation("io.ktor:ktor-serialization:$ktor_version")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     val exposedVersion = "0.30.1"
