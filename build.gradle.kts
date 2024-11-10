@@ -46,7 +46,7 @@ tasks.withType<Test> {
 }
 
 dependencies {
-    val ktor_version = "1.5.3"
+    val ktor_version = "1.6.8"
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("ch.qos.logback:logback-classic:1.2.3")
