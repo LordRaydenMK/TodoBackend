@@ -54,7 +54,7 @@ dependencies {
     val exposedVersion = "0.30.1"
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
-    implementation("org.postgresql:postgresql:42.2.19")
+    implementation("org.postgresql:postgresql:42.7.2")
 
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     val kotest_version = "4.4.3"
